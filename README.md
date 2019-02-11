@@ -1,0 +1,1 @@
+See `code/Grid.tsx` and `code/GridBox.tsx` for Photo Grid component code.
