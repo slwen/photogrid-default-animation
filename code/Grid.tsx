@@ -46,7 +46,7 @@ const Container = posed.div({
     transition: {
       scale: ({ numberOfBoxes }) => ({
         ease: [0.175, 0.885, 0.32, 1.1],
-        duration: 300 - numberOfBoxes
+        duration: 300 - numberOfBoxes // Subtracting numberOfBoxes to speed up animation for bigger grids
       }),
       opacity: ({ numberOfBoxes }) => ({
         ease: "easeOut",
@@ -61,7 +61,7 @@ const Container = posed.div({
       scale: ({ d, numberOfBoxes }) => ({
         ease: [0.175, 0.885, 0.32, 1.1],
         duration: 300 - numberOfBoxes,
-        delay: d * (150 - numberOfBoxes / 1.5)  
+        delay: d * (150 - numberOfBoxes / 1.5) // numberOfBoxes / 1.5 used to again speed up animation for bigger grids
       }),
       opacity: ({ d, numberOfBoxes }) => ({
         ease: "easeOut",
@@ -99,7 +99,9 @@ export class Grid extends React.Component<{}, State> {
     }, 200);
   }
 
+  // This is where most of the magic happens
   calculateImpactRadiation(index) {
+    // Store the x and y position of each grid item
     const positions = [...document.querySelectorAll(".Grid__box")].map(el => {
       const loc = el.getBoundingClientRect();
       return {
@@ -109,6 +111,8 @@ export class Grid extends React.Component<{}, State> {
       };
     });
 
+    // Use some math I don't fully understand to determine distance between each item
+    // and the index (i.e. element that was impacted first)
     return positions
       .map(pos => {
         return Math.sqrt(
@@ -120,6 +124,7 @@ export class Grid extends React.Component<{}, State> {
   }
 
   handleClick(e, index) {
+    // Trigger animation from impact point (index)
     this.setState({ touched: index }, () => {
       this.setState({ boxes: this.calculateImpactRadiation(index) });
     });
@@ -138,7 +143,7 @@ export class Grid extends React.Component<{}, State> {
               ? "touched"
               : "hidden"
           }
-          d={distanceFromImpact}
+          d={distanceFromImpact} // Used to control delay / stagger timing
           key={`container${index}`}
           numberOfBoxes={boxes.length}
         >
